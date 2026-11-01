@@ -1,0 +1,80 @@
+{
+  "id": "L3-07",
+  "title": "Priority review escalated to urgent → same-day slot → confirmed",
+  "category": "manual-review",
+  "processId": "patient-appointment-triage",
+  "app": "http://localhost:8083",
+  "expected": {
+    "endEvent": "EndEvent_AppointmentConfirmed",
+    "route": "DMN PRIORITY_REVIEW → staff escalates → urgent assessment books urgent slot (max wait 0) → confirmed"
+  },
+  "variables": {
+    "patientReference": "SYN-P-0107",
+    "patientAge": 72,
+    "appointmentPreference": {
+      "department": "GENERAL_PRACTICE",
+      "preferredDate": "2026-11-03",
+      "timeOfDay": "ANY"
+    },
+    "symptomsSummary": "High temperature and fatigue since yesterday",
+    "painLevel": 4,
+    "symptomDurationDays": 1,
+    "highFever": true,
+    "chronicCondition": true
+  },
+  "steps": [
+    {
+      "do": "completeTask",
+      "elementId": "Task_PriorityReview",
+      "variables": {
+        "reviewOutcome": "ESCALATE_URGENT",
+        "reviewNotes": "Older patient with chronic condition and fever, escalate"
+      }
+    },
+    {
+      "do": "completeTask",
+      "elementId": "Task_UrgentAssessment",
+      "variables": {
+        "assessmentOutcome": "BOOK_URGENT_SLOT",
+        "assessmentNotes": "Stable on assessment, same-day GP slot"
+      }
+    },
+    {
+      "do": "publishMessage",
+      "name": "appointment-confirmed",
+      "correlationKey": "SYN-P-0107",
+      "waitForElement": "Task_WaitForConfirmation",
+      "variables": {
+        "confirmedVia": "SMS reply (synthetic)"
+      }
+    },
+    {
+      "do": "waitForElement",
+      "elementId": "EndEvent_AppointmentConfirmed",
+      "state": "COMPLETED"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L3-07"
+    }
+  ],
+  "reportVariables": [
+    "urgencyCategory",
+    "triageReason",
+    "maxWaitDays",
+    "registrationErrors",
+    "reviewOutcome",
+    "assessmentOutcome",
+    "schedulingOutcome",
+    "searchSite",
+    "slotCount",
+    "firstAttemptConflicts",
+    "requeried",
+    "bookingStatus",
+    "bookingReference",
+    "bookingSite",
+    "appointmentSlot",
+    "patientConfirmation"
+  ]
+}

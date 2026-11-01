@@ -1,0 +1,81 @@
+{
+  "id": "L3-02",
+  "title": "Moderate pain → priority staff review (Tasklist UI) → booked → confirmed",
+  "category": "manual-review",
+  "processId": "patient-appointment-triage",
+  "app": "http://localhost:8083",
+  "expected": {
+    "endEvent": "EndEvent_AppointmentConfirmed",
+    "route": "DMN PRIORITY_REVIEW → staff books in Tasklist → main-hospital slot → confirmed"
+  },
+  "variables": {
+    "patientReference": "SYN-P-0102",
+    "patientAge": 52,
+    "appointmentPreference": {
+      "department": "ORTHOPAEDICS",
+      "preferredDate": "2026-11-03",
+      "timeOfDay": "AFTERNOON"
+    },
+    "symptomsSummary": "Knee pain after a fall, swelling when walking",
+    "painLevel": 6,
+    "symptomDurationDays": 10
+  },
+  "steps": [
+    {
+      "do": "screenshot",
+      "view": "tasklist-list",
+      "name": "05-tasklist-task-list",
+      "waitFor": "parked"
+    },
+    {
+      "do": "completeTask",
+      "elementId": "Task_PriorityReview",
+      "variables": {
+        "reviewOutcome": "BOOK_APPOINTMENT",
+        "reviewNotes": "Stable, book orthopaedic appointment within 3 days"
+      },
+      "ui": {
+        "radio": "Book an appointment within the target window",
+        "textarea": "Stable, book orthopaedic appointment within 3 days"
+      },
+      "screenshot": "06-tasklist-task-form-priority-review"
+    },
+    {
+      "do": "publishMessage",
+      "name": "appointment-confirmed",
+      "correlationKey": "SYN-P-0102",
+      "waitForElement": "Task_WaitForConfirmation",
+      "variables": {
+        "confirmedVia": "SMS reply (synthetic)"
+      }
+    },
+    {
+      "do": "waitForElement",
+      "elementId": "EndEvent_AppointmentConfirmed",
+      "state": "COMPLETED"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L3-02"
+    }
+  ],
+  "reportVariables": [
+    "urgencyCategory",
+    "triageReason",
+    "maxWaitDays",
+    "registrationErrors",
+    "reviewOutcome",
+    "assessmentOutcome",
+    "schedulingOutcome",
+    "searchSite",
+    "slotCount",
+    "firstAttemptConflicts",
+    "requeried",
+    "bookingStatus",
+    "bookingReference",
+    "bookingSite",
+    "appointmentSlot",
+    "patientConfirmation"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "L2-08",
+  "title": "Inventory service outage → incident → service restored → retry → fulfilled",
+  "category": "failure-recovery",
+  "processId": "order-fulfilment",
+  "app": "http://localhost:8082",
+  "expected": {
+    "endEvent": "EndEvent_OrderFulfilled",
+    "route": "Validate → inventory service 503 ×3 (5 s back-off) → INCIDENT → service restored → retry → reserved → fulfilment"
+  },
+  "variables": {
+    "orderId": "ORD-2008",
+    "customerReference": "CUST-0002",
+    "productId": "PRD-1001",
+    "quantity": 3,
+    "deliveryPreference": "STANDARD",
+    "paymentToken": "tok_test_approve"
+  },
+  "steps": [
+    {
+      "do": "fault",
+      "name": "inventory-service-down",
+      "enabled": true,
+      "before": true
+    },
+    {
+      "do": "expectIncident",
+      "elementId": "Task_CheckPrimaryWarehouse"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "07-operate-incident-L2-08"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-incident",
+      "name": "08-operate-incident-detail-L2-08"
+    },
+    {
+      "do": "fault",
+      "name": "inventory-service-down",
+      "enabled": false
+    },
+    {
+      "do": "retryIncident"
+    },
+    {
+      "do": "wait"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "09-operate-recovered-L2-08"
+    }
+  ],
+  "reportVariables": [
+    "orderValid",
+    "validationErrors",
+    "customerCategory",
+    "stockStatus",
+    "stockSource",
+    "warehouse",
+    "primaryWarehouseAvailable",
+    "secondaryWarehouseAvailable",
+    "reservationId",
+    "reservationStatus",
+    "orderTotal",
+    "deliveryPriority",
+    "slaHours",
+    "verificationDecision",
+    "paymentProvider",
+    "paymentFallbackUsed",
+    "primaryPaymentError",
+    "paymentStatus",
+    "transactionId",
+    "declineReason",
+    "paymentAttempts",
+    "carrierUsed",
+    "carrier",
+    "shipmentId",
+    "trackingNumber"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "L1-03",
+  "title": "Borderline score: officer approves in Tasklist, offer accepted",
+  "category": "manual-review",
+  "processId": "loan-approval",
+  "app": "http://localhost:8081",
+  "expected": {
+    "endEvent": "EndEvent_LoanDisbursed",
+    "route": "score 648 -> DMN LD-6 Manual review -> officer approves (Tasklist UI) -> offer accepted -> disbursed"
+  },
+  "variables": {
+    "applicationId": "LA-03-${RUN}",
+    "applicantId": "APP-1003",
+    "fullName": "Synthetic Applicant Charlie",
+    "email": "synthetic.applicant.charlie@example.org",
+    "age": 35,
+    "employmentStatus": "EMPLOYED",
+    "monthlyIncome": 5400,
+    "monthlyDebtPayments": 900,
+    "loanAmount": 30000,
+    "loanTermMonths": 72,
+    "loanPurpose": "Debt consolidation"
+  },
+  "steps": [
+    {
+      "do": "screenshot",
+      "view": "tasklist-list",
+      "name": "05-tasklist-task-list",
+      "waitFor": "parked"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L1-03-waiting-for-review"
+    },
+    {
+      "do": "completeTask",
+      "elementId": "Task_ManualReview",
+      "variables": {
+        "officerDecision": "APPROVED",
+        "officerComment": "Stable employment, affordable instalment; approved with standard terms."
+      },
+      "ui": {
+        "radio": "Approve loan",
+        "textarea": "Stable employment, affordable instalment; approved with standard terms."
+      },
+      "screenshot": "06-tasklist-task-form"
+    },
+    {
+      "do": "publishMessage",
+      "name": "loan-offer-response",
+      "correlationKey": "LA-03-${RUN}",
+      "waitForElement": "Task_WaitForOfferResponse",
+      "variables": {
+        "offerAccepted": true
+      }
+    },
+    {
+      "do": "wait"
+    }
+  ],
+  "reportVariables": [
+    "applicationComplete",
+    "applicantEligible",
+    "validationErrors",
+    "eligibilityIssues",
+    "identityVerified",
+    "creditCheckStatus",
+    "creditBureauUsed",
+    "creditScore",
+    "creditRiskBand",
+    "primaryBureauError",
+    "creditCheckError",
+    "debtToIncomeRatio",
+    "loanToIncomeRatio",
+    "loanDecision",
+    "finalDecision",
+    "decisionSource",
+    "decisionReason",
+    "offerId",
+    "interestRate",
+    "offerAccepted",
+    "disbursementReference",
+    "officerDecision",
+    "officerComment"
+  ]
+}

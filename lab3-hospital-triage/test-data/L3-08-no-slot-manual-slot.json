@@ -1,0 +1,79 @@
+{
+  "id": "L3-08",
+  "title": "No slot anywhere → scheduling staff assigns a manual slot → confirmed",
+  "category": "manual-review",
+  "processId": "patient-appointment-triage",
+  "app": "http://localhost:8083",
+  "expected": {
+    "endEvent": "EndEvent_AppointmentConfirmed",
+    "route": "DMN PRIORITY_REVIEW → staff books → main 0 slots → partner 0 slots → staff manual slot → confirmed"
+  },
+  "variables": {
+    "patientReference": "SYN-P-0108",
+    "patientAge": 38,
+    "appointmentPreference": {
+      "department": "DERMATOLOGY",
+      "preferredDate": "2026-11-03",
+      "timeOfDay": "AFTERNOON"
+    },
+    "symptomsSummary": "Changing mole on the back, painless",
+    "painLevel": 0,
+    "symptomDurationDays": 20
+  },
+  "steps": [
+    {
+      "do": "completeTask",
+      "elementId": "Task_PriorityReview",
+      "variables": {
+        "reviewOutcome": "BOOK_APPOINTMENT",
+        "reviewNotes": "Book dermatology review within 5 days"
+      }
+    },
+    {
+      "do": "completeTask",
+      "elementId": "Task_ResolveScheduling",
+      "variables": {
+        "schedulingOutcome": "MANUAL_SLOT",
+        "manualSlot": "2026-11-05 15:00 - Dermatology extra clinic, room 4",
+        "schedulingNotes": "Extra clinic session opened by the department"
+      }
+    },
+    {
+      "do": "publishMessage",
+      "name": "appointment-confirmed",
+      "correlationKey": "SYN-P-0108",
+      "waitForElement": "Task_WaitForConfirmation",
+      "variables": {
+        "confirmedVia": "SMS reply (synthetic)"
+      }
+    },
+    {
+      "do": "waitForElement",
+      "elementId": "EndEvent_AppointmentConfirmed",
+      "state": "COMPLETED"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L3-08"
+    }
+  ],
+  "reportVariables": [
+    "urgencyCategory",
+    "triageReason",
+    "maxWaitDays",
+    "registrationErrors",
+    "reviewOutcome",
+    "assessmentOutcome",
+    "schedulingOutcome",
+    "searchSite",
+    "slotCount",
+    "firstAttemptConflicts",
+    "requeried",
+    "bookingStatus",
+    "bookingReference",
+    "bookingSite",
+    "appointmentSlot",
+    "patientConfirmation"
+  ]
+}

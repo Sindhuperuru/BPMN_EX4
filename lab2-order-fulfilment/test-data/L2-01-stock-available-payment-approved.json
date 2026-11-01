@@ -1,0 +1,61 @@
+{
+  "id": "L2-01",
+  "title": "Stock available and payment approved",
+  "category": "success",
+  "processId": "order-fulfilment",
+  "app": "http://localhost:8082",
+  "expected": {
+    "endEvent": "EndEvent_OrderFulfilled",
+    "route": "Validate → primary warehouse reserves → total → DMN LOW → primary provider APPROVED → primary carrier → fulfilment"
+  },
+  "variables": {
+    "orderId": "ORD-2001",
+    "customerReference": "CUST-0001",
+    "productId": "PRD-1001",
+    "quantity": 2,
+    "deliveryPreference": "STANDARD",
+    "paymentToken": "tok_test_approve"
+  },
+  "steps": [
+    {
+      "do": "wait"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L2-01"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-variables",
+      "name": "10-operate-variables-L2-01"
+    }
+  ],
+  "reportVariables": [
+    "orderValid",
+    "validationErrors",
+    "customerCategory",
+    "stockStatus",
+    "stockSource",
+    "warehouse",
+    "primaryWarehouseAvailable",
+    "secondaryWarehouseAvailable",
+    "reservationId",
+    "reservationStatus",
+    "orderTotal",
+    "deliveryPriority",
+    "slaHours",
+    "verificationDecision",
+    "paymentProvider",
+    "paymentFallbackUsed",
+    "primaryPaymentError",
+    "paymentStatus",
+    "transactionId",
+    "declineReason",
+    "paymentAttempts",
+    "carrierUsed",
+    "carrier",
+    "shipmentId",
+    "trackingNumber"
+  ]
+}

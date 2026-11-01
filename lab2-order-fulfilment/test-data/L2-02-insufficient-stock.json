@@ -1,0 +1,56 @@
+{
+  "id": "L2-02",
+  "title": "Both warehouses short – order cannot proceed to fulfilment",
+  "category": "rejection",
+  "processId": "order-fulfilment",
+  "app": "http://localhost:8082",
+  "expected": {
+    "endEvent": "EndEvent_OutOfStock",
+    "route": "Validate → primary warehouse short (2 < 5) → secondary warehouse short (1 < 5) → notify → cancelled"
+  },
+  "variables": {
+    "orderId": "ORD-2002",
+    "customerReference": "CUST-0004",
+    "productId": "PRD-LOW-01",
+    "quantity": 5,
+    "deliveryPreference": "STANDARD",
+    "paymentToken": "tok_test_approve"
+  },
+  "steps": [
+    {
+      "do": "wait"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L2-02"
+    }
+  ],
+  "reportVariables": [
+    "orderValid",
+    "validationErrors",
+    "customerCategory",
+    "stockStatus",
+    "stockSource",
+    "warehouse",
+    "primaryWarehouseAvailable",
+    "secondaryWarehouseAvailable",
+    "reservationId",
+    "reservationStatus",
+    "orderTotal",
+    "deliveryPriority",
+    "slaHours",
+    "verificationDecision",
+    "paymentProvider",
+    "paymentFallbackUsed",
+    "primaryPaymentError",
+    "paymentStatus",
+    "transactionId",
+    "declineReason",
+    "paymentAttempts",
+    "carrierUsed",
+    "carrier",
+    "shipmentId",
+    "trackingNumber"
+  ]
+}

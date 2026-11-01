@@ -1,0 +1,59 @@
+{
+  "id": "L3-04",
+  "title": "No slot at main hospital or partner clinic (DERMATOLOGY) → staff waitlists",
+  "category": "rejection",
+  "processId": "patient-appointment-triage",
+  "app": "http://localhost:8083",
+  "expected": {
+    "endEvent": "EndEvent_Waitlisted",
+    "route": "main hospital 0 slots → partner clinic 0 slots → scheduling staff → waiting list"
+  },
+  "variables": {
+    "patientReference": "SYN-P-0104",
+    "patientAge": 29,
+    "appointmentPreference": {
+      "department": "DERMATOLOGY",
+      "preferredDate": "2026-11-03",
+      "timeOfDay": "ANY"
+    },
+    "symptomsSummary": "Itchy rash on forearm for five days",
+    "painLevel": 1,
+    "symptomDurationDays": 5
+  },
+  "steps": [
+    {
+      "do": "completeTask",
+      "elementId": "Task_ResolveScheduling",
+      "variables": {
+        "schedulingOutcome": "WAITLIST",
+        "schedulingNotes": "No dermatology capacity at either site, waitlisted"
+      }
+    },
+    {
+      "do": "wait"
+    },
+    {
+      "do": "screenshot",
+      "view": "operate-instance",
+      "name": "04-operate-instance-L3-04"
+    }
+  ],
+  "reportVariables": [
+    "urgencyCategory",
+    "triageReason",
+    "maxWaitDays",
+    "registrationErrors",
+    "reviewOutcome",
+    "assessmentOutcome",
+    "schedulingOutcome",
+    "searchSite",
+    "slotCount",
+    "firstAttemptConflicts",
+    "requeried",
+    "bookingStatus",
+    "bookingReference",
+    "bookingSite",
+    "appointmentSlot",
+    "patientConfirmation"
+  ]
+}
